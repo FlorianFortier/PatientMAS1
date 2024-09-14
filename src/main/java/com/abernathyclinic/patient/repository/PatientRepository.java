@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PatientRepository extends MongoRepository<Patient, String> {
-    // Vous pouvez ajouter des méthodes personnalisées ici si nécessaire
 }

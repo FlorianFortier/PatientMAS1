@@ -10,9 +10,9 @@ import lombok.AllArgsConstructor;
 import java.time.LocalDate;
 
 @Document(collection = "patients")
-@Data // Génère les getters, setters, toString, equals, hashCode
-@NoArgsConstructor // Génère le constructeur par défaut
-@AllArgsConstructor // Génère un constructeur avec tous les paramètres
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Patient {
 
     @Id

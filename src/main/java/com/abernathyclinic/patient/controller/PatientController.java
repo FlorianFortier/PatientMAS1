@@ -14,25 +14,25 @@ import java.util.List;
 public class PatientController {
 
     private PatientService patientService;
-    // Create or update a person
+    // Create or update a patient
     @PostMapping
     public Patient createOrUpdatePatient(@RequestBody Patient patient) {
         return patientService.saveOrUpdatePatient(patient);
     }
 
-    // Get all persons
+    // Get all patient
     @GetMapping
     public List<Patient> getAllPatients() {
         return patientService.getAllPatients();
     }
 
-    // Get person by ID
+    // Get patient by ID
     @GetMapping("/{id}")
     public Patient getPatientById(@PathVariable String id) {
         return patientService.getPatientById(id).orElse(null);
     }
 
-    // Delete person by ID
+    // Delete patient by ID
     @DeleteMapping("/{id}")
     public Void deletePatientById(@PathVariable String id) {
         return patientService.deletePatientById(id);

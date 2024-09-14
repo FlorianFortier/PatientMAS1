@@ -9,13 +9,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Setter
 @Getter
-@Document(collection = "users")  // Spécifie la collection MongoDB
-@NoArgsConstructor // Génère le constructeur par défaut
-@AllArgsConstructor // Génère un constructeur avec tous les paramètres
+@Document(collection = "users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
-    private String username;  // Utilisé comme identifiant (équivaut à `_id` dans MongoDB)
+    private String username;
     private String password;
     private String role;
 

@@ -18,10 +18,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**").permitAll()  // Permet l'accès public aux endpoints sous /public
-                        .anyRequest().authenticated()  // Tout autre endpoint nécessite une authentification
+                        .requestMatchers("/public/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(withDefaults());  // Utilisation de l'authentification HTTP Basique
+                .httpBasic(withDefaults());
 
         return http.build();
     }

@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         UserBuilder builder = User.withUsername(user.getUsername());
-        builder.password(user.getPassword());  // Le mot de passe doit être encodé dans la base de données
+        builder.password(user.getPassword());
         builder.roles(user.getRole());
 
         return builder.build();
