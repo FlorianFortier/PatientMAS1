@@ -1,9 +1,40 @@
+version: '3.8'
+
 services:
   mongodb:
     image: 'mongo:latest'
     environment:
-      - 'MONGO_INITDB_DATABASE=mydatabase'
-      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
-      - 'MONGO_INITDB_ROOT_USERNAME=root'
+      - MONGO_INITDB_DATABASE=patientdb
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=secret
     ports:
-      - '27017'
+      - '27017:27017'
+    networks:
+      - springboot-network
+    healthcheck:
+      test: [ "CMD", "pgrep", "mongod" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  springboot-app:
+    build: .
+    restart: on-failure
+    image: patient-app:latest
+    ports:
+      - '8080:8080'
+    environment:
+      - SPRING_DATA_MONGODB_HOST=mongodb
+      - SPRING_DATA_MONGODB_PORT=27017
+      - SPRING_DATA_MONGODB_DATABASE=patientdb
+      - SPRING_DATA_MONGODB_USERNAME=root
+      - SPRING_DATA_MONGODB_PASSWORD=secret
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - springboot-network
+
+networks:
+  springboot-network:
+    external: true
