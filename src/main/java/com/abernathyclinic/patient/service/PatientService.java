@@ -2,7 +2,6 @@ package com.abernathyclinic.patient.service;
 
 import com.abernathyclinic.patient.model.Patient;
 import com.abernathyclinic.patient.repository.PatientRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +10,11 @@ import java.util.Optional;
 @Service
 public class PatientService {
 
-    @Autowired
-    private PatientRepository patientRepository;
+    public PatientService(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
+    }
+
+    private final PatientRepository patientRepository;
 
     // Create or Update a person
     public Patient saveOrUpdatePatient(Patient person) {
@@ -30,9 +32,8 @@ public class PatientService {
     }
 
     // Delete a person by ID
-    public Void deletePatientById(String id) {
+    public void deletePatientById(String id) {
         patientRepository.deleteById(id);
-        return null;
     }
 }
 
