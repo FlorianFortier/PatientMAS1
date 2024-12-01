@@ -1,15 +1,17 @@
 package com.abernathyclinic.patient.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity // Indique que cette classe est une entité JPA
@@ -49,7 +51,16 @@ public class Patient {
     @Column(nullable = false) // Non nullable
     private String whoLastModified;
 
-    @Column(columnDefinition = "TEXT", nullable = false) // Si les notes peuvent être longues, non nullable
-    private String note;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Patient patient = (Patient) o;
+        return Objects.equals(id, patient.id);
+    }
 
+    @Override
+    public final int hashCode() {
+        return Objects.hash(getId());
+    }
 }

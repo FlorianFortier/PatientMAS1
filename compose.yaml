@@ -7,22 +7,21 @@ services:
       - MARIADB_DATABASE=patientdb
       - MARIADB_ROOT_PASSWORD=root
     ports:
-      - '3306:3306'
+      - '3310:3306'
     networks:
       - springboot-network
-
-  springboot-app:
+  patient-app:
     build: .
     restart: on-failure
     image: patient-app:latest
     ports:
-      - '8080:8080'
+      - '8085:8080'
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/patientdb
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
-    depends_on: [mariadb]
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on: [ mariadb ]
     networks:
       - springboot-network
 

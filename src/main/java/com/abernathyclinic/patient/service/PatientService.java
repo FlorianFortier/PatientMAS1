@@ -27,12 +27,12 @@ public class PatientService {
     }
 
     // Retrieve a person by ID
-    public Optional<Patient> getPatientById(String id) {
+    public Optional<Patient> getPatientById(Long id) {
         return patientRepository.findById(id);
     }
 
     // Delete a person by ID
-    public void deletePatientById(String id) {
+    public void deletePatientById(Long id) {
         patientRepository.deleteById(id);
     }
 }

@@ -26,7 +26,7 @@ class PatientServiceTest {
 
     @Test
     void testCreateOrUpdatePatient() {
-        Patient patient = new Patient(1L, "TestNone", "PrenomTest", LocalDate.of(1990, 1, 1), "M", "123 rue", "123456789", LocalDate.now(), LocalDate.now(), "admin", null);
+        Patient patient = new Patient(1L, "TestNone", "PrenomTest", LocalDate.of(1990, 1, 1), "M", "123 rue", "123456789", LocalDate.now(), LocalDate.now(), "admin");
 
         when(patientRepository.save(patient)).thenReturn(patient);
 
@@ -35,24 +35,9 @@ class PatientServiceTest {
         assertNotNull(savedPatient);
         assertEquals("TestNone", savedPatient.getNom());
     }
-    @Test
-    void testCreateOrUpdatePatient_TestNone() {
-        Patient patient = new Patient(1L, "TestNone", "PrenomTest", LocalDate.of(1990, 1, 1), "M", "123 rue", "123456789", LocalDate.now(), LocalDate.now(), "admin", null);
-
-        when(patientRepository.save(patient)).thenReturn(patient);
-
-        Patient savedPatient = patientService.saveOrUpdatePatient(patient);
-
-        assertNotNull(savedPatient);
-        assertEquals("TestNone", savedPatient.getNom());
-        // Vérifier les informations de la note du tableau pour TestNone
-        String note = "Le patient déclare qu'il se sent très bien. Poids égal ou inférieur au poids recommandé.";
-        assertTrue(note.contains("Poids égal ou inférieur au poids recommandé"));
-    }
-
     @Test
     void testCreateOrUpdatePatient_TestBorderline() {
-        Patient patient = new Patient(2L, "TestBorderline", "PrenomTest", LocalDate.of(1985, 3, 20), "F", "456 rue", "987654321", LocalDate.now(), LocalDate.now(), "admin", "Le patient déclare qu'il ressent beaucoup de stress au travail. Il se plaint également que son audition est anormale dernièrement.");
+        Patient patient = new Patient(2L, "TestBorderline", "PrenomTest", LocalDate.of(1985, 3, 20), "F", "456 rue", "987654321", LocalDate.now(), LocalDate.now(), "admin");
 
         when(patientRepository.save(patient)).thenReturn(patient);
 
@@ -60,14 +45,10 @@ class PatientServiceTest {
 
         assertNotNull(savedPatient);
         assertEquals("TestBorderline", savedPatient.getNom());
-        // Vérifier les informations de la note du tableau pour TestBorderline
-        String note = "Le patient déclare qu'il ressent beaucoup de stress au travail. Il se plaint également que son audition est anormale dernièrement.";
-        assertEquals(note, savedPatient.getNote());
     }
-
     @Test
     void testCreateOrUpdatePatient_TestInDanger() {
-        Patient patient = new Patient(3L, "TestInDanger", "PrenomTest", LocalDate.of(1970, 5, 10), "M", "789 rue", "112233445", LocalDate.now(), LocalDate.now(), "admin", "Le patient est fumeur et qu'il a cessé de fumer l'année dernière. Il se plaint également de crises d’apnée respiratoire anormales.");
+        Patient patient = new Patient(3L, "TestInDanger", "PrenomTest", LocalDate.of(1970, 5, 10), "M", "789 rue", "112233445", LocalDate.now(), LocalDate.now(), "admin");
 
         when(patientRepository.save(patient)).thenReturn(patient);
 
@@ -75,14 +56,10 @@ class PatientServiceTest {
 
         assertNotNull(savedPatient);
         assertEquals("TestInDanger", savedPatient.getNom());
-        // Vérifier les informations de la note du tableau pour TestInDanger
-        String note = "Le patient est fumeur et qu'il a cessé de fumer l'année dernière. Il se plaint également de crises d’apnée respiratoire anormales.";
-        assertEquals(note, savedPatient.getNote());
     }
-
     @Test
     void testCreateOrUpdatePatient_TestEarlyOnset() {
-        Patient patient = new Patient( 4L, "TestEarlyOnset", "PrenomTest", LocalDate.of(1980, 11, 15), "F", "159 rue", "556677889", LocalDate.now(), LocalDate.now(), "admin", "Le patient déclare avoir commencé à fumer depuis peu. Hémoglobine A1C supérieure au niveau recommandé.");
+        Patient patient = new Patient(4L, "TestEarlyOnset", "PrenomTest", LocalDate.of(1980, 11, 15), "F", "159 rue", "556677889", LocalDate.now(), LocalDate.now(), "admin");
 
         when(patientRepository.save(patient)).thenReturn(patient);
 
@@ -90,55 +67,35 @@ class PatientServiceTest {
 
         assertNotNull(savedPatient);
         assertEquals("TestEarlyOnset", savedPatient.getNom());
-        // Vérifier les informations de la note du tableau pour TestEarlyOnset
-        String note = "Le patient déclare avoir commencé à fumer depuis peu. Hémoglobine A1C supérieure au niveau recommandé.";
-        assertEquals(note, savedPatient.getNote());
     }
-
-    @Test
-    void testCreateOrUpdatePatient_TestEarlyOnsetWithMultipleNotes() {
-        Patient patient = new Patient(4L, "TestEarlyOnset", "PrenomTest", LocalDate.of(1980, 11, 15), "F", "159 rue", "556677889", LocalDate.now(), LocalDate.now(), "admin", "Taille, Poids, Cholestérol, Vertige et Réaction.");
-
-        when(patientRepository.save(patient)).thenReturn(patient);
-
-        Patient savedPatient = patientService.saveOrUpdatePatient(patient);
-
-        assertNotNull(savedPatient);
-        assertEquals("TestEarlyOnset", savedPatient.getNom());
-        // Vérifier les informations de la dernière note du tableau pour TestEarlyOnset
-        String note = "Taille, Poids, Cholestérol, Vertige et Réaction.";
-        assertEquals(note, savedPatient.getNote());;
-    }
-
     @Test
     void testGetPatientById() {
-        Long patientId = 1L;
-        Patient patient = new Patient(patientId, "TestNone", "PrenomTest", LocalDate.of(1990, 1, 1), "M", "123 rue", "123456789", LocalDate.now(), LocalDate.now(), "admin", null);
+        long patientId = 1L;
+        Patient patient = new Patient(patientId, "TestNone", "PrenomTest", LocalDate.of(1990, 1, 1), "M", "123 rue", "123456789", LocalDate.now(), LocalDate.now(), "admin");
 
-        when(patientRepository.findById(patientId.toString())).thenReturn(Optional.of(patient));
+        when(patientRepository.findById(Long.valueOf(Long.toString(patientId)))).thenReturn(Optional.of(patient));
 
-        Optional<Patient> retrievedPatient = patientService.getPatientById(patientId.toString());
+        Optional<Patient> retrievedPatient = patientService.getPatientById(Long.valueOf(Long.toString(patientId)));
 
         assertTrue(retrievedPatient.isPresent());
         assertEquals("TestNone", retrievedPatient.get().getNom());
     }
-
     @Test
     void testDeletePatientById() {
         String patientId = "1";
 
-        doNothing().when(patientRepository).deleteById(patientId);
+        doNothing().when(patientRepository).deleteById(Long.valueOf(patientId));
 
-        patientService.deletePatientById(patientId);
+        patientService.deletePatientById(Long.valueOf(patientId));
 
-        verify(patientRepository, times(1)).deleteById(patientId);
+        verify(patientRepository, times(1)).deleteById(Long.valueOf(patientId));
     }
 
     @Test
     void testGetAllPatients() {
         when(patientRepository.findAll()).thenReturn(List.of(
-                new Patient(1L, "TestNone", "PrenomTest", LocalDate.of(1990, 1, 1), "M", "123 rue", "123456789", LocalDate.now(), LocalDate.now(), "admin", null),
-                new Patient(1L, "TestBorderline", "PrenomTest", LocalDate.of(1985, 3, 20), "F", "456 rue", "987654321", LocalDate.now(), LocalDate.now(), "admin", null)
+                new Patient(1L, "TestNone", "PrenomTest", LocalDate.of(1990, 1, 1), "M", "123 rue", "123456789", LocalDate.now(), LocalDate.now(), "admin"),
+                new Patient(1L, "TestBorderline", "PrenomTest", LocalDate.of(1985, 3, 20), "F", "456 rue", "987654321", LocalDate.now(), LocalDate.now(), "admin")
         ));
 
         List<Patient> patients = patientService.getAllPatients();

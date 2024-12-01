@@ -7,6 +7,6 @@ RUN mvn clean package -DskipTests
 # Étape 2 : Utiliser OpenJDK 21 pour exécuter l'application
 FROM openjdk:21-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/patient-0.0.2-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/patient-0.0.2-SNAPSHOT.jar patient.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "patient.jar"]
