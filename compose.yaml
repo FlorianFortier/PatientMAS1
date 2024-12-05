@@ -15,7 +15,7 @@ services:
     restart: on-failure
     image: patient-app:latest
     ports:
-      - '8085:8080'
+      - '8085:8085'
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/patientdb
       - SPRING_DATASOURCE_USERNAME=root

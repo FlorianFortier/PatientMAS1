@@ -4,58 +4,83 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+/**
+ * Configuration class for Spring Security.
+ * <p>
+ * This class configures the security settings of the application, including
+ * JWT authentication, stateless session management, and password encoding.
+ * </p>
+ */
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(withDefaults()).csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/api/**").hasRole("ORGANIZER")
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(withDefaults()); // Utilisation de l'authentification HTTP Basic
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    /**
+     * Constructs a new {@code SecurityConfig} with the specified {@link JwtAuthenticationFilter}.
+     *
+     * @param jwtAuthenticationFilter the filter responsible for validating JWTs.
+     */
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+    /**
+     * Configures the security filter chain for the application.
+     * <p>
+     * This method disables CSRF protection, enforces authentication for all requests,
+     * configures stateless session management, and integrates the {@link JwtAuthenticationFilter}.
+     * </p>
+     *
+     * @param http the {@link HttpSecurity} object used to configure security settings.
+     * @return the configured {@link SecurityFilterChain}.
+     * @throws Exception if an error occurs while configuring security.
+     */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
+    /**
+     * Provides a {@link PasswordEncoder} bean for encoding passwords.
+     * <p>
+     * This method uses the {@link BCryptPasswordEncoder} for secure password hashing.
+     * </p>
+     *
+     * @return a {@link BCryptPasswordEncoder} instance.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Provides an {@link AuthenticationManager} bean for managing authentication.
+     * <p>
+     * This method retrieves the {@link AuthenticationManager} from the {@link AuthenticationConfiguration}.
+     * </p>
+     *
+     * @param authenticationConfiguration the configuration object for authentication.
+     * @return the configured {@link AuthenticationManager}.
+     * @throws Exception if an error occurs while retrieving the authentication manager.
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails user1 = User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("password"))
-                .roles("USER") // Rôle
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("adminpass"))
-                .roles("ADMIN", "ORGANIZER") // Rôles multiples
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, admin);
-    }
-
 }

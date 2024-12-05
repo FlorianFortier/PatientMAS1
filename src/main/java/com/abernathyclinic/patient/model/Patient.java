@@ -41,14 +41,14 @@ public class Patient {
     private String telephone;
 
     @UpdateTimestamp // Gère automatiquement la date de dernière modification
-    @Column(nullable = false) // Non nullable
+    @Column()
     private LocalDate lastModified;
 
     @CreationTimestamp // Gère automatiquement la date de création
     @Column(nullable = false, updatable = false) // Non nullable, non modifiable après la création
     private LocalDate createdAt;
 
-    @Column(nullable = false) // Non nullable
+    @Column()
     private String whoLastModified;
 
     @Override
